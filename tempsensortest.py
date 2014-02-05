@@ -1,7 +1,6 @@
 import serial, time, math
 from datetime import datetime as dt
 from tempodb import Client, DataPoint
-from pylab import *
 
 def temp(x):
 	val = x / 1023.0
@@ -10,11 +9,12 @@ def temp(x):
 	#print "resistance: {:.1f}K , temp: {}C".format(res/1000.0, t)
 	return t
 
-data = open("./sensordata").readlines()
+data = open("~/logs/sensordata").readlines()
 
 try:
-	last_sent = dt.fromtimestamp(float(open("./last_sent_to_tempodb").read()))
-except:last_sent = 0
+	last_sent = dt.fromtimestamp(float(open("~/logs/last_sent_to_tempodb").read()))
+except:
+	last_sent = 0
 
 data = [dict(i.split('=') for i in d.strip('\n').split(', ')) for d in data]
 for d in data:
@@ -46,5 +46,5 @@ SERIES_KEY = 'my room temp'
 client = Client(API_KEY, API_SECRET)
 client.write_key(SERIES_KEY,temp_data)
 
-open("./last_sent_to_tempodb", 'w').write(str(time.time()))
+open("~/logs/last_sent_to_tempodb", 'w').write(str(time.time()))
 
