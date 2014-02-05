@@ -17,7 +17,8 @@ except:
 	last_sent = dt.fromtimestamp(float(0))
 
 data = [dict(i.split('=') for i in d.strip('\n').split(', ')) for d in data]
-for d in data:
+new_data = [d for d in data if dt.fromtimestamp(int(d['time'])) >= last_sent]
+for d in new_data:
 	d['temp'] = temp(int(d['temp']))
 	d['id'] = int(d['id'])
 	d['vcc'] = float(d['vcc'])
@@ -25,7 +26,7 @@ for d in data:
 	d['tries'] = int(d['tries'])
 	d['time'] = dt.fromtimestamp(int(d['time']))
 
-new_data = [d for d in data if d['time'] >= last_sent]
+
 print len(new_data)
 
 
