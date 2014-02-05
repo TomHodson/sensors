@@ -9,7 +9,7 @@ def temp(x):
 	#print "resistance: {:.1f}K , temp: {}C".format(res/1000.0, t)
 	return t
 
-data = open("~/logs/sensordata").readlines()
+data = open("/home/pi/logs/sensordata").readlines()
 
 try:
 	last_sent = dt.fromtimestamp(float(open("~/logs/last_sent_to_tempodb").read()))
@@ -46,5 +46,5 @@ SERIES_KEY = 'my room temp'
 client = Client(API_KEY, API_SECRET)
 client.write_key(SERIES_KEY,temp_data)
 
-open("~/logs/last_sent_to_tempodb", 'w').write(str(time.time()))
+open("/home/pi/logs/last_sent_to_tempodb", 'w').write(str(time.time()))
 
