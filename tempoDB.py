@@ -2,6 +2,10 @@ import time, math
 from datetime import datetime as dt
 from tempodb import Client, DataPoint
 
+nodeIDs = {1:'my room temp', 2:'kitchen', 3:'water'}
+path = "/home/pi/logs"
+#path = '.'
+
 def temp(x):
 	val = x / 1023.0
 	res = 9840.0 / (1 - val) - 9840.0
@@ -9,10 +13,10 @@ def temp(x):
 	#print "resistance: {:.1f}K , temp: {}C".format(res/1000.0, t)
 	return t
 
-data = open("/home/pi/logs/sensordata").readlines()
+data = open("{}/sensordata".format(path)).readlines()
 
 try:
-	last_sent = dt.fromtimestamp(float(open("/home/pi/logs/last_sent_to_tempodb").read()))
+	last_sent = dt.fromtimestamp(float(open("{}/last_sent_to_tempodb".format(path)).read()))
 except:
 	last_sent = dt.fromtimestamp(float(0))
 
@@ -26,9 +30,17 @@ for d in new_data:
 	d['tries'] = int(d['tries'])
 	d['time'] = dt.fromtimestamp(int(d['time']))
 
-
 print len(new_data)
+sorted_by_id = {}
+for d in new_data:
+	key = nodeIDs.get(d['id']) or str(d['id'])
+	p = DataPoint(d['time'], d['temp'])
+	try:
+		sorted_by_id[key].append(p)
+	except:
+		sorted_by_id[key] = [p]
 
+print sorted_by_id
 
 
 #print data[5:10]
@@ -36,16 +48,14 @@ print len(new_data)
 
 #time_dict = {d['time'] : d for d in data}
 #show()
-
-temp_data = [DataPoint(d['time'],d['temp'] ) for d in new_data]
-#print temp_data
 # Modify these with your credentials found at: http://tempo-db.com/manage/
 API_KEY = 'f3c71667bab7425fb9ac728409d22f1e'
 API_SECRET = '1b72a21ad76247e8afc2b00ba46df329'
-SERIES_KEY = 'my room temp'
 
-if len(temp_data) > 0:
+if len(sorted_by_id) > 0:
 	client = Client(API_KEY, API_SECRET)
-	client.write_key(SERIES_KEY,temp_data)
-	open("/home/pi/logs/last_sent_to_tempodb", 'w').write(str(time.time()))
+	for key in sorted_by_id:
+		print "sent {} under key {}".format(sorted_by_id[key], key)
+		client.write_key(key,sorted_by_id[key])
+	open("{}/last_sent_to_tempodb".format(path), 'w').write(str(time.time()))
 

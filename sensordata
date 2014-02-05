@@ -1014,3 +1014,6 @@ id=1, tries=1, temp=623, vcc=3.034, pipe=1, time=1391623580
 id=1, tries=1, temp=623, vcc=3.034, pipe=1, time=1391623648
 id=1, tries=1, temp=622, vcc=3.034, pipe=1, time=1391623716
 id=1, tries=1, temp=621, vcc=3.034, pipe=1, time=1391623784
+id=2, tries=1, temp=621, vcc=3.034, pipe=1, time=1391623784
+id=3, tries=1, temp=621, vcc=3.034, pipe=1, time=1391623784
+id=4, tries=1, temp=621, vcc=3.034, pipe=1, time=1391623784
