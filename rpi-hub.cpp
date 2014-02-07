@@ -83,8 +83,9 @@ void loop(void)
 		int id = (int) receivePayload[0];
 		int tries = (int) receivePayload[1];
 		int temp = (receivePayload[2]<<8) + (receivePayload[3]);
-		double vcc = 1023.0 * 1.13 / ((receivePayload[4]<<8) + (receivePayload[5]));  
-		fprintf(stdout, "id=%d, tries=%d, temp=%d, vcc=%.3f, pipe=%X, time=%ld\n", id,tries,temp,vcc,pipe,time(NULL));		
+		double vcc = 1023.0 * 1.13 / ((receivePayload[4]<<8) + (receivePayload[5]));
+		light = len > 6 ? (receivePayload[6]<<8) + (receivePayload[7]) : 0;
+		fprintf(stdout, "id=%d, tries=%d, temp=%d, light=%d, vcc=%.3f, pipe=%X, time=%ld\n", id,tries,temp,light,vcc,pipe,time(NULL));		
 		fflush(stdout);
 		// Display it on screen
 		//printf("payload=%X, pipe=%X \n",receivePayload,pipe);

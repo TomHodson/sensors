@@ -7,7 +7,7 @@
 #include <avr/power.h>
 #include <avr/wdt.h>
 
-volatile uint8_t f_wdt=2;
+volatile uint8_t f_wdt=0;
 ISR(WDT_vect)
 {
     f_wdt++;
@@ -35,8 +35,9 @@ void enterSleep(void)
 RF24 radio(9,10);
 
 const uint8_t temp_pin = A5;
+const uint8_t light_pin = A4;
 
-const uint8_t nodeID = 1;
+const uint8_t nodeID = 3;
 
 const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0x7365727631LL };
 // const uint64_t pipes[2] = { 0xF0F0F0F0E2LL, 0xF0F0F0F0E2LL };
@@ -45,11 +46,14 @@ const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0x7365727631LL };
 // const uint64_t pipes[2] = { 0xF0F0F0F0E5LL, 0xF0F0F0F0E5LL };
 // Pipe0 is F0F0F0F0D2 ( same as reading pipe )
 
+const boolean debug = false;
+
 void setup(void)
 {
   pinMode(temp_pin, INPUT);
+  pinMode(light_pin, INPUT);
   
-  //Serial.begin(9600);
+  if(debug) Serial.begin(9600);
   radio.begin();
 
   // Enable this seems to work better
@@ -100,28 +104,39 @@ void send(void)
   uint8_t tries = 0;
   boolean did_it_send = false;
   char outBuffer[16];
+  uint16_t temp; uint16_t light; uint16_t v_bat;
   
   while(did_it_send == false & tries < 20)
   {
     tries++;
     //String payload = String(nodeID) + ", " + String(tries) + ", " + String(analogRead(temp_pin));
     //payload.toCharArray(outBuffer, 16);
-    uint16_t temp = analogRead(temp_pin);
-    uint16_t v_bat = readVcc();
-    outBuffer[0] = nodeID; outBuffer[1] = tries; outBuffer[2] = highByte(temp); outBuffer[3] = lowByte(temp); outBuffer[4] = highByte(v_bat); outBuffer[5] = lowByte(v_bat);
+    temp = analogRead(temp_pin);
+    light = analogRead(light_pin);
+    v_bat = readVcc();
+    outBuffer[0] = nodeID; outBuffer[1] = tries; outBuffer[2] = highByte(temp); outBuffer[3] = lowByte(temp); 
+    outBuffer[4] = highByte(v_bat); outBuffer[5] = lowByte(v_bat); outBuffer[6] = highByte(light); outBuffer[7] = lowByte(light);
     did_it_send = radio.write(outBuffer, strlen(outBuffer));
   }
-    //Serial.println(outBuffer);
+  if(debug) Serial.println(String(light) + ', ' + temp);
   }
+
+const uint8_t n = 8;
 
 void loop(void)
 {
-  if(f_wdt >= 8) {
+  if(f_wdt >= n) {
     f_wdt = 0;
     send();
   }
   radio.powerDown();
+  if(debug) {
+  delay(1000);
+  f_wdt++;
+  }
+  else {
   enterSleep();
+  }
   
 }
 
