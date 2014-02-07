@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <time.h>
-#include "../RF24.h"
+#include "/home/pi/RF24/RF24.h"
 
 using namespace std;
 
