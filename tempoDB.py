@@ -2,7 +2,7 @@ import time, math
 from datetime import datetime as dt
 from tempodb import Client, DataPoint
 
-nodeIDs = {1:'my room temp', 2:'kitchen', 3:'water'}
+nodeIDs = {1:'my room temp', 2:'kitchen', 3:'water', 4:'parents room'}
 path = "/home/pi/logs"
 #path = '.'
 
