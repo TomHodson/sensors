@@ -18,6 +18,8 @@ CCFLAGS=-Wall -Ofast -mfpu=vfp -mfloat-abi=hard -march=armv6zk -mtune=arm1176jzf
 #CCFLAGS=
 
 # define all programs
+
+
 #PROGRAMS = scanner pingtest pongtest
 PROGRAMS = rpi-hub #scanner pingtest pongtest sendto_hub
 SOURCES = ${PROGRAMS:=.cpp}
@@ -25,7 +27,7 @@ SOURCES = ${PROGRAMS:=.cpp}
 all: ${PROGRAMS}
 
 ${PROGRAMS}: ${SOURCES}
-#	g++ ${CCFLAGS} -Wall -L../librf24/  -lrf24 $@.cpp -o $@
+#	g++ ${CCFLAGS} -Wall -L~/RF24/librf24/  -lrf24 $@.cpp -o $@
 	g++ ${CCFLAGS} -L~/RF24/librf24/  -lrf24 $@.cpp -o $@
 
 clean:
