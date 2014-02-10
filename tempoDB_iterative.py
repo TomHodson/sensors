@@ -37,7 +37,7 @@ try:
 except:
 	last_sent = dt.fromtimestamp(float(0))
 
-new_data = {}
+new_data = []
 for line in reversed_lines(data):
 	d = dict(i.split('=') for i in line.strip('\n').split(', '))
 	d['temp'] = temp(int(d['temp']))
