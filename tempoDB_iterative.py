@@ -20,7 +20,7 @@ def reversed_lines(file):
             part += c
     if part: yield part[::-1]
 
-def reversed_blocks(file, blocksize=4096):
+def reversed_blocks(file, blocksize=128):
     "Generate blocks of file's contents in reverse order."
     file.seek(0, os.SEEK_END)
     here = file.tell()
