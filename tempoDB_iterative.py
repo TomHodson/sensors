@@ -7,22 +7,45 @@ nodeIDs = {1:'my room temp', 2:'kitchen', 3:'water', 4:'parents room'}
 path = "/home/pi/logs"
 #path = '.'
 
-data = open("{}/sensordata".format(path)).readlines()
+import os
+
+def reversed_lines(file):
+    "Generate the lines of file in reverse order."
+    part = ''
+    for block in reversed_blocks(file):
+        for c in reversed(block):
+            if c == '\n' and part:
+                yield part[::-1]
+                part = ''
+            part += c
+    if part: yield part[::-1]
+
+def reversed_blocks(file, blocksize=4096):
+    "Generate blocks of file's contents in reverse order."
+    file.seek(0, os.SEEK_END)
+    here = file.tell()
+    while 0 < here:
+        delta = min(blocksize, here)
+        here -= delta
+        file.seek(here, os.SEEK_SET)
+        yield file.read(delta)
+
+data = open("{}/sensordata".format(path))
 
 try:
 	last_sent = dt.fromtimestamp(float(open("{}/last_sent_to_tempodb".format(path)).read()))
 except:
 	last_sent = dt.fromtimestamp(float(0))
 
-data = [dict(i.split('=') for i in d.strip('\n').split(', ')) for d in data]
-new_data = [d for d in data if dt.fromtimestamp(int(d['time'])) >= last_sent]
-for d in new_data:
+for line in reversed_lines(data):
+	d = dict(i.split('=') for i in line.strip('\n').split(', '))
 	d['temp'] = temp(int(d['temp']))
 	d['id'] = int(d['id'])
 	d['vcc'] = float(d['vcc'])
 	d['pipe'] = int(d['pipe'])
 	d['tries'] = int(d['tries'])
 	d['time'] = dt.fromtimestamp(int(d['time']))
+	if d['time'] <= last_sent: break
 
 print len(new_data)
 sorted_by_id = {}
