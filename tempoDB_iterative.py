@@ -37,6 +37,7 @@ try:
 except:
 	last_sent = dt.fromtimestamp(float(0))
 
+new_data = {}
 for line in reversed_lines(data):
 	d = dict(i.split('=') for i in line.strip('\n').split(', '))
 	d['temp'] = temp(int(d['temp']))
@@ -46,6 +47,7 @@ for line in reversed_lines(data):
 	d['tries'] = int(d['tries'])
 	d['time'] = dt.fromtimestamp(int(d['time']))
 	if d['time'] <= last_sent: break
+	new_data.append(d)
 
 print len(new_data)
 sorted_by_id = {}
