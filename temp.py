@@ -1,3 +1,5 @@
+import math
+
 def temp(x):
 	val = x / 1023.0
 	if val == 1: val = 0.999
