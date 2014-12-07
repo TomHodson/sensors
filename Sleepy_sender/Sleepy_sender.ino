@@ -36,6 +36,7 @@ RF24 radio(9,10);
 
 const uint8_t temp_pin = A5;
 const uint8_t light_pin = A4;
+const uint8_t dial_pin = 3;
 
 const uint8_t nodeID = 3;
 
@@ -46,12 +47,13 @@ const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0x7365727631LL };
 // const uint64_t pipes[2] = { 0xF0F0F0F0E5LL, 0xF0F0F0F0E5LL };
 // Pipe0 is F0F0F0F0D2 ( same as reading pipe )
 
-const boolean debug = false;
+const boolean debug = true;
 
 void setup(void)
 {
   pinMode(temp_pin, INPUT);
   pinMode(light_pin, INPUT);
+  pinMode(dial_pin, OUTPUT);
   
   if(debug) Serial.begin(9600);
   radio.begin();
@@ -131,13 +133,15 @@ void loop(void)
   }
   radio.powerDown();
   if(debug) {
-  delay(1000);
+  analogWrite(dial_pin, analogRead(light_pin));
+  analogWrite(dial_pin, analogRead(light_pin));
+  //analogWrite(dial_pin, 50.0 * (220.0/100.0));
+  delay(1);
   f_wdt++;
   }
   else {
   enterSleep();
   }
-  
 }
 
 
