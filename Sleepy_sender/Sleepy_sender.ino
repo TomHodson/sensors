@@ -123,7 +123,7 @@ void send(void)
   if(debug) Serial.println(String(light) + ', ' + temp);
   }
 
-const uint8_t n = 8;
+const uint8_t n = 1;
 
 void loop(void)
 {
@@ -137,6 +137,7 @@ void loop(void)
   analogWrite(dial_pin, analogRead(light_pin));
   //analogWrite(dial_pin, 50.0 * (220.0/100.0));
   delay(1);
+  send();
   f_wdt++;
   }
   else {
